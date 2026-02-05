@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>For You Babyy</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+margin:0;
+font-family:'Comic Sans MS','Poppins',system-ui,sans-serif;
+min-height:100vh;
+background:linear-gradient(135deg,#fde2e4,#fadadd,#e0c3fc);
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
+}
+
+/* FIX 1: first page image */
+.card img:first-child{
+max-width:100%;
+max-height:200px;
+object-fit:contain;
+}
+
+/* hearts */
+.heart{
+position:absolute;
+color:rgba(255,105,180,.4);
+animation:floatUp linear infinite;
+font-size:16px;
+pointer-events:none;
+}
+
+@keyframes floatUp{
+from{transform:translateY(100vh);opacity:0}
+20%{opacity:1}
+to{transform:translateY(-10vh);opacity:0}
+}
+
+.card{
+background:#fff;
+border-radius:24px;
+padding:24px;
+text-align:center;
+box-shadow:0 20px 40px rgba(0,0,0,.15);
+position:relative;
+}
+
+.gif{
+width:230px;
+height:400px;
+object-fit:cover;
+border-radius:16px;
+}
+
+
+.question{
+font-size:1.6rem;
+font-weight:bold;
+color:#ff4d6d;
+display:none;
+}
+
+.buttons{
+display:flex;
+gap:12px;
+justify-content:center;
+}
+
+button{
+border:none;
+border-radius:999px;
+padding:12px 20px;
+font-size:1rem;
+cursor:pointer;
+}
+
+#yesBtn{
+background:linear-gradient(135deg,#ff5f8f,#ff8fab);
+color:#fff;
+}
+
+#noBtn{
+background:#e0e0e0;
+color:#555;
+}
+
+/* celebration */
+.celebrate,.final-page{
+position:fixed;
+inset:0;
+background:linear-gradient(135deg,#ffb3c6,#ffc8dd);
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:10;
+}
+
+.confetti{
+position:absolute;
+width:10px;
+height:10px;
+background:pink;
+animation:fall linear infinite;
+}
+
+@keyframes fall{
+from{transform:translateY(-10vh) rotate(0)}
+to{transform:translateY(110vh) rotate(360deg)}
+}
+</style>
+</head>
+
+<body>
+
+<div class="card" id="card" style=" display:flex;
+flex-direction:column; gap: 10px;">
+<img src="first_page.jpg">
+<div class="tease">Hey… I’ve been meaning to ask you something 👉👈</div>
+<div class="question" id="question">Will you be my Valentine?</div>
+<div class="buttons">
+<button id="yesBtn">Yes</button>
+<button id="noBtn">No</button>
+</div>
+</div>
+
+<script>
+
+    const question = document.getElementById('question');
+    const noBtn = document.getElementById('noBtn');
+    const yesBtn = document.getElementById('yesBtn');
+    const card = document.getElementById('card');
+    const music = document.getElementById('bgMusic');
+    const musicToggle = document.getElementById('musicToggle');
+
+    const noTexts = [
+      'Are you sure?',
+      'Think again 👀',
+      'That hurts 💔',
+      'I’ll cry 😭',
+      'Last chance 😤',
+      'Okay but why though?',
+      'You’re breaking my heart 🥲'
+    ];
+
+    let noClicks = 0;
+
+    setTimeout(() => {
+      question.style.display = 'block';
+    }, 1200);
+
+    noBtn.addEventListener('click', () => {
+      noClicks++;
+
+      // Change text
+      const text = noTexts[Math.min(noClicks - 1, noTexts.length - 1)];
+      noBtn.textContent = text;
+
+      // Grow yes button
+      const scale = 1 + noClicks * 0.15;
+      yesBtn.style.transform = `scale(${scale})`;
+
+      // Shrink and wiggle no button
+      noBtn.style.transform = `scale(${Math.max(0.4, 1 - noClicks * 0.1)}) rotate(${noClicks % 2 === 0 ? 5 : -5}deg)`;
+
+      // Make it dodge a bit
+      noBtn.style.position = 'relative';
+      noBtn.style.left = `${(Math.random() * 20 - 10)}px`;
+      noBtn.style.top = `${(Math.random() * 20 - 10)}px`;
+    });
+
+    yesBtn.addEventListener('click', () => {
+      celebrate();
+    });
+function celebrate(){
+const overlay=document.createElement("div");
+overlay.className="celebrate";
+
+overlay.innerHTML=`
+<div class="card">
+  <div style="display:flex;align-items:center;justify-content:center;gap:10px">
+    <img src="left.jpg" style="width:100px">
+    <div style="position:relative">
+      <img class="gif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ3p1M3FqYWRiZ2VxNjh5b25wMWFhNjB1ZmlkZHRxY2JqM3FqZzN1YiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/MDJ9IbxxvDUQM/giphy.gif">
+      <div style="
+        position:absolute;
+        bottom:2px;
+        left:50%;
+        transform:translateX(-50%);
+        color:yellow;
+        font-size:.6rem;
+      ">
+
+        COME HERE LEMME GIVE YOU A KISS
+      </div>
+    </div>
+    <img src="right.jpg" style="width:100px">
+  </div>
+          <h2 style="color:#ff4d6d;">I KNEW you’d say yes 😗 </h2>
+        <p>You’re my Valentine now </p>
+</div>
+`;
+
+document.body.appendChild(overlay);
+
+/* confetti */
+for(let i=0;i<160;i++){
+const c=document.createElement("div");
+c.className="confetti";
+c.style.left=Math.random()*100+"vw";
+c.style.animationDuration=2+Math.random()*3+"s";
+overlay.appendChild(c);
+}
+
+setTimeout(()=>{
+overlay.remove();
+showFinalPage();
+},10000);
+}
+
+function showFinalPage(){
+const final=document.createElement("div");
+final.className="final-page";
+final.innerHTML=`
+<div class="card">
+<img src="final.jpg">
+<p style="font-size:1.6rem;color:#ff4d6d;font-weight:bold">
+I Love You Abhisheak
+</p>
+</div>`;
+document.body.appendChild(final);
+}
+
+/* hearts */
+setInterval(()=>{
+const h=document.createElement("div");
+h.className="heart";
+h.textContent="💖";
+h.style.left=Math.random()*100+"vw";
+h.style.animationDuration=6+Math.random()*6+"s";
+document.body.appendChild(h);
+setTimeout(()=>h.remove(),12000);
+},800);
+</script>
+
+</body>
+</html>
